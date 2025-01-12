@@ -16,6 +16,12 @@ module.exports.registerUser = async (req , res , next)=>{
     //get the data from req.body || frontend
     const {fullname, email , password} = req.body;
 
+    // check if user exists in the database
+    isUserAlreadyRegistered = await userModel.findOne({ email});
+    if(isUserAlreadyRegistered){
+        return res.status(400).json({ message: 'User already exists' });
+    }
+
     // create a hash password 
    const hashedPassword = await userModel.hashPassword(password);
     
@@ -79,5 +85,5 @@ module.exports.logout = async function(req , res, next){
     const token = req.cookies.token || req.headers.authorization.split(' ')[1];
 
     await BlacklistTokenModel.create({token});
-    res.sendStatus(200).json({message: 'logout user'});
+    res.status(200).json({message: 'logout user'});
 }
