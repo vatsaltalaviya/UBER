@@ -4,6 +4,8 @@ const userController = require('../controllers/user.controller');
 const {body} = require('express-validator');
 
 
+// create a route for registration of users
+
 router.post("/register",[
     body('email').isEmail().withMessage('Inavalid email'),
     body('fullname.firstname').isLength({min:3}).withMessage('First name must be atleast 3 characters'),
