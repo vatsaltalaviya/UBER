@@ -1,6 +1,10 @@
 const userModel  = require('../models/user.model');
 const userService = require('../services/user.service');
 const { validationResult } = require('express-validator');
+const BlacklistTokenModel = require('../models/blacklistToken.model');
+
+
+// Create a new user with provided data. If any required fields are missing, throw an error.
 module.exports.registerUser = async (req , res , next)=>{
 
     // validate the input data using express-validator
@@ -30,7 +34,7 @@ module.exports.registerUser = async (req , res , next)=>{
 }
 
 
-
+// login the user if the user already exists
 module.exports.loginUser = async (req , res , next)=>{
     const error = validationResult(req);
     if(!error.isEmpty()){
@@ -55,5 +59,25 @@ module.exports.loginUser = async (req , res , next)=>{
     // generate a token for the user and send the status message
     const token = user.generateAuthToken();
 
+    // set the token in a cookie for future requests
+    res.cookie('token', token)
+
+    // send the user data and token
     res.status(200).json({user , token});
+}
+
+
+// get user profile by user id
+module.exports.getUserProfile = async function(req , res, next){
+    res.status(200).json(req.user);
+}
+
+module.exports.logout = async function(req , res, next){
+    // clear the token from the cookie
+    res.clearCookie('token');
+
+    const token = req.cookies.token || req.headers.authorization.split(' ')[1];
+
+    await BlacklistTokenModel.create({token});
+    res.sendStatus(200).json({message: 'logout user'});
 }
