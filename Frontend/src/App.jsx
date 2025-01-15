@@ -33,6 +33,7 @@ const App = () => {
       <Route path='/caption/logout' element={<CaptionProtectedWrapper><CaptionLogout /></CaptionProtectedWrapper>}/>
       <Route path='/users/logout' element={<UserProtectedWrapper><UserLogout /></UserProtectedWrapper>}/>
     </Routes>
+    
   )
 }
 
