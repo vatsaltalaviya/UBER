@@ -17,13 +17,15 @@ const Userlogin = () => {
         const userData = {email:email , password:password}
         
         // call login api here
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData);
-      if(response.status === 200){
+    
+       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`,userData);
+       if(response.status === 200){{
         const data = response.data;
         setUser(data.user);
         localStorage.setItem('token', data.token)
         navigate('/home');
       }
+       }
 
         // clear form
         setEmail('');
