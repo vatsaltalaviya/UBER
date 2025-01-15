@@ -55,7 +55,7 @@ const captionSchema = new mongoose.Schema({
         vehicleType:{
             type:String,
             required:true,
-            enum:['car', 'auto', 'motorcycle']
+            enum:['Car', 'Auto', 'Motorcycle']
         }
     },
     locations:{

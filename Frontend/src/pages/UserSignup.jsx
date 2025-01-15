@@ -1,19 +1,38 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Link , useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import {UserDataContext} from '../context/UserContext'
 
 const UserSignup = () => {
     const[firstname , setFirstname] = useState('')
     const[lastname , setLastname] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [userData, setUserData] = useState()
 
-    const submitHandler = (e) => {
+
+    const {user, setUser}  = useContext(UserDataContext);
+
+    const navigate = useNavigate()
+
+    const submitHandler = async (e) => {
         e.preventDefault();
-        // call login api here
-        setUserData({
-            fullname:{firstname:firstname, lastname:lastname},
-             email:email , password:password})
+       
+        const newUser = {
+            fullname:{
+              firstname:firstname,
+              lastname:lastname},
+             email:email , 
+             password:password}
+         // call login api here
+         const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+
+         if(response.status== 201){
+           const data = response.data;
+          setUser(data.user) 
+          localStorage.setItem('token', data.token)
+           navigate("/home")
+         }
+
         // clear form
         setFirstname('');
         setLastname('');
@@ -67,7 +86,7 @@ const UserSignup = () => {
         }}
         />
         
-        <button className='bg-[#000] text-white font-semibold mb-3 px-4 py-2 rounded w-full text-lg placeholder:text-base'>Login </button>
+        <button className='bg-[#000] text-white font-semibold mb-3 px-4 py-2 rounded w-full text-lg placeholder:text-base'>Create Account </button>
         </form>
         <p className='text-center '>Already have an Account ?<Link to='/login' className='text-blue-700 ml-2' >Login here</Link></p>
         
